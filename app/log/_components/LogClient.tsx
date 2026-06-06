@@ -32,6 +32,8 @@ export function LogClient({
   const [toast, setToast] = useState<Toast>(null);
   const [scan, setScan] = useState('');
   const scanRef = useRef<HTMLInputElement>(null);
+  const [scanLogging, startScanLog] = useTransition();
+  const [recent, setRecent] = useState<{ name: string; time: string }[]>([]);
 
   const selectedCount = categories.filter((c) => selected[c.id]).length;
 
@@ -52,19 +54,42 @@ export function LogClient({
   const toggle = (id: string) =>
     setSelected((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  // Handscanner "typt" de code en drukt op Enter.
+  // Handscanner "typt" de code en drukt op Enter. Elke scan logt de taak
+  // METEEN voor de gekozen datum + persoon — geen Opslaan-knop nodig.
   const handleScan = () => {
     const code = scan.trim();
     setScan('');
-    if (!code) return;
-    const match = byBarcode.get(code.toLowerCase());
-    if (match) {
-      setSelected((prev) => ({ ...prev, [match.id]: true }));
-      toast2({ kind: 'success', message: `✓ ${match.name}` });
-    } else {
-      toast2({ kind: 'error', message: `Onbekende barcode: ${code}` });
-    }
     scanRef.current?.focus();
+    if (!code) return;
+
+    const match = byBarcode.get(code.toLowerCase());
+    if (!match) {
+      toast2({ kind: 'error', message: `Onbekende barcode: ${code}` });
+      return;
+    }
+    if (!person) {
+      toast2({ kind: 'error', message: 'Kies eerst een persoon hierboven.' });
+      return;
+    }
+
+    startScanLog(async () => {
+      const result = await logTasks(
+        date,
+        [{ categoryId: match.id, details: null }],
+        person,
+      );
+      if (result.ok) {
+        const time = new Date().toLocaleTimeString('nl-NL', {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        toast2({ kind: 'success', message: `✓ ${match.name} gelogd (${time})` });
+        setRecent((prev) => [{ name: match.name, time }, ...prev].slice(0, 8));
+        router.refresh(); // kalender vers houden
+      } else {
+        toast2({ kind: 'error', message: result.error });
+      }
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -161,11 +186,16 @@ export function LogClient({
         </div>
       </section>
 
-      {/* Barcode scannen */}
+      {/* Barcode scannen — direct loggen */}
       <section className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg shadow-sm">
-        <label htmlFor="scan" className="text-label-md text-on-surface-variant">
-          Barcode scannen
-        </label>
+        <div className="flex items-center justify-between">
+          <label htmlFor="scan" className="text-label-md text-on-surface-variant">
+            Barcode scannen — direct loggen
+          </label>
+          {scanLogging && (
+            <Icon name="progress_activity" className="animate-spin text-primary" />
+          )}
+        </div>
         <div className="mt-xs flex items-center gap-sm rounded-lg border border-outline-variant bg-surface px-md focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
           <Icon name="barcode_scanner" />
           <input
@@ -186,8 +216,31 @@ export function LogClient({
           />
         </div>
         <p className="mt-xs text-label-sm font-normal tracking-normal text-secondary">
-          De gescande taak wordt automatisch aangevinkt in de lijst hieronder.
+          Kies eerst een persoon hierboven. Elke scan logt de taak meteen — je
+          hoeft niet op Opslaan te drukken. Blijf scannen voor meer taken.
         </p>
+
+        {recent.length > 0 && (
+          <div className="mt-md rounded-lg border border-primary/30 bg-primary-container/40 p-3">
+            <p className="mb-1 text-label-sm text-on-primary-container">
+              Zojuist gelogd ({person}):
+            </p>
+            <ul className="space-y-0.5">
+              {recent.map((r, i) => (
+                <li
+                  key={i}
+                  className="flex items-center gap-sm text-label-md text-on-surface"
+                >
+                  <Icon name="check_circle" className="text-primary" />
+                  <span className="flex-1">{r.name}</span>
+                  <span className="text-label-sm font-normal tracking-normal text-secondary">
+                    {r.time}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </section>
 
       {/* Taken */}
