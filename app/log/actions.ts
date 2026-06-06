@@ -3,6 +3,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/utils/supabase/server';
+import { isAuthenticated } from '@/utils/auth-guard';
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -20,6 +21,9 @@ export async function logTasks(
   entries: LogEntry[],
   loggedBy?: string,
 ): Promise<ActionResult> {
+  if (!(await isAuthenticated())) {
+    return { ok: false, error: 'Niet ingelogd. Herlaad de pagina en log opnieuw in.' };
+  }
   if (!DATE_RE.test(date)) {
     return { ok: false, error: 'Kies een geldige datum.' };
   }

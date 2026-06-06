@@ -1,6 +1,8 @@
 // app/admin/export/route.ts
-// Downloadt alle gelogde taken als CSV-bestand. Beveiligd via proxy.ts.
+// Downloadt alle gelogde taken als CSV-bestand. Beveiligd via proxy.ts
+// én via een eigen auth-check (defense-in-depth).
 import { createClient } from '@/utils/supabase/server';
+import { isAuthenticated } from '@/utils/auth-guard';
 
 type Row = {
   date: string;
@@ -25,6 +27,10 @@ function timeLabel(createdAt: string): string {
 }
 
 export async function GET() {
+  if (!(await isAuthenticated())) {
+    return new Response('Niet ingelogd.', { status: 401 });
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('tasks')

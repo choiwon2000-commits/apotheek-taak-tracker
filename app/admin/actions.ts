@@ -3,12 +3,20 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/utils/supabase/server';
+import { isAuthenticated } from '@/utils/auth-guard';
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
+
+const NOT_AUTHED: ActionResult = {
+  ok: false,
+  error: 'Niet ingelogd. Herlaad de pagina en log opnieuw in.',
+};
 
 const MAX_DESCRIPTION = 200;
 
 export async function addCategory(formData: FormData): Promise<ActionResult> {
+  if (!(await isAuthenticated())) return NOT_AUTHED;
+
   const raw = formData.get('name');
   const name = typeof raw === 'string' ? raw.trim() : '';
 
@@ -59,6 +67,7 @@ export async function addCategory(formData: FormData): Promise<ActionResult> {
 }
 
 export async function deleteCategory(id: string): Promise<ActionResult> {
+  if (!(await isAuthenticated())) return NOT_AUTHED;
   if (!id) return { ok: false, error: 'Missing category ID.' };
 
   const supabase = await createClient();
@@ -81,6 +90,7 @@ export async function updateCategoryBarcode(
   id: string,
   barcode: string,
 ): Promise<ActionResult> {
+  if (!(await isAuthenticated())) return NOT_AUTHED;
   if (!id) return { ok: false, error: 'Ontbrekende categorie-ID.' };
 
   const value = barcode.trim() || null;
@@ -108,6 +118,8 @@ export async function updateCategoryBarcode(
 
 // ---------- Personen ----------
 export async function addPerson(formData: FormData): Promise<ActionResult> {
+  if (!(await isAuthenticated())) return NOT_AUTHED;
+
   const raw = formData.get('name');
   const name = typeof raw === 'string' ? raw.trim() : '';
 
@@ -135,6 +147,7 @@ export async function addPerson(formData: FormData): Promise<ActionResult> {
 }
 
 export async function deletePerson(id: string): Promise<ActionResult> {
+  if (!(await isAuthenticated())) return NOT_AUTHED;
   if (!id) return { ok: false, error: 'Ontbrekende persoon-ID.' };
 
   const supabase = await createClient();
