@@ -15,8 +15,8 @@ export default async function LoginPage({
   const from = raw && raw.startsWith('/') && !raw.startsWith('//') ? raw : '/';
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-gutter">
-      <div className="w-full max-w-md">
+    <main className="min-h-screen bg-background">
+      <div className="mx-auto flex min-h-screen max-w-[28rem] flex-col justify-center px-4 py-10">
         <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg shadow-sm md:p-xl">
           {/* Logo & titel */}
           <div className="mb-xl flex flex-col items-center">

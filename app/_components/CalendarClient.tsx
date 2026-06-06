@@ -315,7 +315,7 @@ export function CalendarClient({
             aria-modal="true"
             aria-label={`Taken voor ${fullDayLabel(selectedDate)}`}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md overflow-hidden rounded-t-2xl border border-outline-variant bg-surface shadow-xl sm:rounded-2xl"
+            className="w-full max-w-[28rem] overflow-hidden rounded-t-2xl border border-outline-variant bg-surface shadow-xl sm:rounded-2xl"
           >
             <header className="flex items-center justify-between border-b border-outline-variant p-lg">
               <h3 className="text-headline-md text-on-surface">

@@ -59,7 +59,7 @@ export function LoginForm({ from }: { from: string }) {
         >
           Inlogcode
         </label>
-        <div className="group relative">
+        <div className="group relative w-full min-w-0">
           <span
             className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline transition-colors group-focus-within:text-primary"
             aria-hidden
@@ -74,7 +74,7 @@ export function LoginForm({ from }: { from: string }) {
             autoFocus
             autoComplete="current-password"
             placeholder="••••••••"
-            className="h-touch-target w-full rounded-lg border border-outline-variant bg-surface-container-low pl-12 pr-12 text-body-md text-on-surface transition-all placeholder:text-outline focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            className="h-touch-target w-full min-w-0 rounded-lg border border-outline-variant bg-surface-container-low pl-12 pr-12 text-body-md text-on-surface transition-all placeholder:text-outline focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <button
             type="button"
