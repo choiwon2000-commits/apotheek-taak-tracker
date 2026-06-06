@@ -1,6 +1,6 @@
 // app/admin/page.tsx
 import { createClient } from '@/utils/supabase/server';
-import type { Category } from '@/utils/supabase/types';
+import type { Category, Person } from '@/utils/supabase/types';
 import { AdminClient } from './_components/AdminClient';
 
 // Always fetch fresh categories — they change rarely but we want
@@ -9,12 +9,20 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminPage() {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('categories')
-    .select('id, name, description, icon, created_at')
-    .order('name', { ascending: true });
+  const [catRes, peopleRes] = await Promise.all([
+    supabase
+      .from('categories')
+      .select('id, name, description, icon, barcode, created_at')
+      .order('name', { ascending: true }),
+    supabase
+      .from('people')
+      .select('id, name, created_at')
+      .order('name', { ascending: true }),
+  ]);
 
-  const categories: Category[] = data ?? [];
+  const categories: Category[] = catRes.data ?? [];
+  const people: Person[] = peopleRes.data ?? [];
+  const error = catRes.error ?? peopleRes.error;
 
   return (
     <main className="mx-auto max-w-5xl px-margin-mobile pb-28 pt-24 md:px-margin-desktop md:pb-12">
@@ -28,11 +36,11 @@ export default async function AdminPage() {
 
       {error && (
         <div className="mb-lg rounded-lg border border-error/30 bg-error-container px-md py-3 text-label-md text-on-error-container">
-          Categorieën konden niet worden geladen: {error.message}
+          Gegevens konden niet worden geladen: {error.message}
         </div>
       )}
 
-      <AdminClient initialCategories={categories} />
+      <AdminClient initialCategories={categories} initialPeople={people} />
     </main>
   );
 }

@@ -4,6 +4,13 @@ export type Category = {
   name: string;
   description: string | null;
   icon: string | null;        // Material Symbol naam, bijv. 'medication'
+  barcode: string | null;     // Code 128-waarde voor scannen
+  created_at: string;
+};
+
+export type Person = {
+  id: string;
+  name: string;
   created_at: string;
 };
 
@@ -12,7 +19,7 @@ export type Task = {
   date: string;            // ISO 'YYYY-MM-DD'
   category_id: string;
   details: string | null;
-  logged_by: string | null; // optionele naam/initialen van wie logde
+  logged_by: string | null; // naam van de gekozen persoon
   created_at: string;
 };
 

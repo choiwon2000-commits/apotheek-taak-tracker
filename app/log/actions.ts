@@ -23,14 +23,16 @@ export async function logTasks(
   if (!DATE_RE.test(date)) {
     return { ok: false, error: 'Kies een geldige datum.' };
   }
+  const by =
+    typeof loggedBy === 'string' && loggedBy.trim()
+      ? loggedBy.trim().slice(0, 80)
+      : null;
+  if (!by) {
+    return { ok: false, error: 'Kies een persoon.' };
+  }
   if (!Array.isArray(entries) || entries.length === 0) {
     return { ok: false, error: 'Selecteer minstens één taak.' };
   }
-
-  const by =
-    typeof loggedBy === 'string' && loggedBy.trim()
-      ? loggedBy.trim().slice(0, 60)
-      : null;
 
   const rows = [];
   for (const entry of entries) {

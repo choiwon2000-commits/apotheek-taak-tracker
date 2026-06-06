@@ -19,6 +19,10 @@ export async function addCategory(formData: FormData): Promise<ActionResult> {
   const iconRaw = formData.get('icon');
   const icon = typeof iconRaw === 'string' && iconRaw.trim() ? iconRaw.trim() : null;
 
+  const barcodeRaw = formData.get('barcode');
+  const barcode =
+    typeof barcodeRaw === 'string' && barcodeRaw.trim() ? barcodeRaw.trim() : null;
+
   if (!name) {
     return { ok: false, error: 'Naam van de categorie mag niet leeg zijn.' };
   }
@@ -35,7 +39,7 @@ export async function addCategory(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
   const { error } = await supabase
     .from('categories')
-    .insert({ name, description, icon });
+    .insert({ name, description, icon, barcode });
 
   if (error) {
     // Postgres unique_violation
@@ -64,6 +68,82 @@ export async function deleteCategory(id: string): Promise<ActionResult> {
     return {
       ok: false,
       error: 'Categorie kon niet worden verwijderd. Probeer het opnieuw.',
+    };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/log');
+  return { ok: true };
+}
+
+// De barcode (Code 128-waarde) van een bestaande taak instellen of wijzigen.
+export async function updateCategoryBarcode(
+  id: string,
+  barcode: string,
+): Promise<ActionResult> {
+  if (!id) return { ok: false, error: 'Ontbrekende categorie-ID.' };
+
+  const value = barcode.trim() || null;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('categories')
+    .update({ barcode: value })
+    .eq('id', id);
+
+  if (error) {
+    if (error.code === '23505') {
+      return { ok: false, error: 'Die barcode is al aan een andere taak gekoppeld.' };
+    }
+    return {
+      ok: false,
+      error: 'Barcode kon niet worden opgeslagen. Probeer het opnieuw.',
+    };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/log');
+  return { ok: true };
+}
+
+// ---------- Personen ----------
+export async function addPerson(formData: FormData): Promise<ActionResult> {
+  const raw = formData.get('name');
+  const name = typeof raw === 'string' ? raw.trim() : '';
+
+  if (!name) return { ok: false, error: 'Naam mag niet leeg zijn.' };
+  if (name.length > 80) {
+    return { ok: false, error: 'Naam is te lang (max. 80 tekens).' };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.from('people').insert({ name });
+
+  if (error) {
+    if (error.code === '23505') {
+      return { ok: false, error: 'Die persoon staat al in de lijst.' };
+    }
+    return {
+      ok: false,
+      error: 'Persoon kon niet worden toegevoegd. Probeer het opnieuw.',
+    };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/log');
+  return { ok: true };
+}
+
+export async function deletePerson(id: string): Promise<ActionResult> {
+  if (!id) return { ok: false, error: 'Ontbrekende persoon-ID.' };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from('people').delete().eq('id', id);
+
+  if (error) {
+    return {
+      ok: false,
+      error: 'Persoon kon niet worden verwijderd. Probeer het opnieuw.',
     };
   }
 
