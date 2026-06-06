@@ -2,6 +2,7 @@
 import { createClient } from '@/utils/supabase/server';
 import type { TaskWithCategory } from '@/utils/supabase/types';
 import { CalendarClient } from './_components/CalendarClient';
+import { SecurityInfo } from './_components/SecurityInfo';
 
 // Logs change whenever staff submit on /log, so always read fresh.
 export const dynamic = 'force-dynamic';
@@ -62,6 +63,8 @@ export default async function CalendarPage({
       )}
 
       <CalendarClient monthISO={month} tasks={tasks} />
+
+      <SecurityInfo />
     </main>
   );
 }
