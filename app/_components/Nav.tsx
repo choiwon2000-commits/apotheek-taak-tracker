@@ -4,6 +4,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logout } from '../login/actions';
+import { Icon } from './Icon';
+import { Logo } from './Logo';
 
 type NavLink = { href: string; label: string; icon: string };
 
@@ -12,27 +14,6 @@ const links: NavLink[] = [
   { href: '/log', label: 'Werk loggen', icon: 'edit_note' },
   { href: '/admin', label: 'Beheer', icon: 'admin_panel_settings' },
 ];
-
-function Icon({
-  name,
-  className,
-  filled,
-}: {
-  name: string;
-  className?: string;
-  filled?: boolean;
-}) {
-  return (
-    <span
-      className={`material-symbols-outlined${filled ? ' filled' : ''}${
-        className ? ` ${className}` : ''
-      }`}
-      aria-hidden
-    >
-      {name}
-    </span>
-  );
-}
 
 export function Nav() {
   const pathname = usePathname();
@@ -48,7 +29,7 @@ export function Nav() {
       {/* Bovenbalk */}
       <header className="fixed top-0 left-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface px-margin-mobile shadow-sm md:px-margin-desktop">
         <Link href="/" className="flex items-center gap-sm">
-          <Icon name="medical_services" className="text-primary" filled />
+          <Logo size={32} />
           <span className="text-headline-sm-mobile font-bold text-primary">
             Apotheek Marne
           </span>

@@ -11,6 +11,7 @@ import {
   updateCategoryBarcode,
 } from '../actions';
 import type { Category, Person } from '@/utils/supabase/types';
+import { Icon } from '../../_components/Icon';
 
 type CatAction =
   | { type: 'add'; category: Category }
@@ -28,14 +29,6 @@ const ICON_OPTIONS = [
   'vaccines', 'thermostat', 'local_shipping', 'science',
   'receipt_long', 'support_agent', 'event', 'task',
 ];
-
-function Icon({ name, filled }: { name: string; filled?: boolean }) {
-  return (
-    <span className={`material-symbols-outlined${filled ? ' filled' : ''}`} aria-hidden>
-      {name}
-    </span>
-  );
-}
 
 function AddButton({ label, busy }: { label: string; busy: string }) {
   const { pending } = useFormStatus();
@@ -502,7 +495,7 @@ function AddButtonInline() {
       disabled={pending}
       className="flex h-touch-target items-center justify-center gap-sm rounded-xl bg-primary px-md text-label-md text-on-primary transition-all hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
     >
-      <span className="material-symbols-outlined" aria-hidden>person_add</span>
+      <Icon name="person_add" />
       {pending ? 'Opslaan…' : 'Toevoegen'}
     </button>
   );

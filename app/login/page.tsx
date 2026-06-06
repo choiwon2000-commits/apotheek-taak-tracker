@@ -1,4 +1,6 @@
 // app/login/page.tsx
+import { Icon } from '../_components/Icon';
+import { Logo } from '../_components/Logo';
 import { LoginForm } from './_components/LoginForm';
 
 export const metadata = {
@@ -20,15 +22,7 @@ export default async function LoginPage({
         <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg shadow-sm md:p-xl">
           {/* Logo & titel */}
           <div className="mb-xl flex flex-col items-center">
-            <div className="mb-md flex h-20 w-20 items-center justify-center rounded-lg bg-primary-container text-on-primary-container">
-              <span
-                className="material-symbols-outlined filled"
-                style={{ fontSize: 40 }}
-                aria-hidden
-              >
-                medical_services
-              </span>
-            </div>
+            <Logo size={80} className="mb-md" />
             <h1 className="text-center text-headline-md text-on-surface">
               Apotheek Marne
             </h1>
@@ -49,13 +43,7 @@ export default async function LoginPage({
         {/* Vertrouwens-elementen */}
         <div className="mt-lg flex justify-center gap-xl opacity-40">
           <div className="flex items-center gap-xs">
-            <span
-              className="material-symbols-outlined text-secondary"
-              style={{ fontSize: 16 }}
-              aria-hidden
-            >
-              verified_user
-            </span>
+            <Icon name="verified_user" className="text-secondary" style={{ fontSize: 16 }} />
             <span className="text-label-sm text-secondary">
               Beveiligde verbinding
             </span>

@@ -3,6 +3,7 @@
 
 import { useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { Icon } from '../../_components/Icon';
 import { login, type LoginState } from '../actions';
 
 function SubmitButton() {
@@ -15,16 +16,12 @@ function SubmitButton() {
     >
       {pending ? (
         <>
-          <span className="material-symbols-outlined animate-spin" aria-hidden>
-            progress_activity
-          </span>
+          <Icon name="progress_activity" className="animate-spin" />
           Bezig met verifiëren…
         </>
       ) : (
         <>
-          <span className="material-symbols-outlined filled" aria-hidden>
-            login
-          </span>
+          <Icon name="login" filled />
           Inloggen
         </>
       )}
@@ -45,9 +42,7 @@ export function LoginForm({ from }: { from: string }) {
           role="alert"
           className="flex items-center gap-sm rounded-lg border border-error/30 bg-error-container px-md py-3 text-label-md text-on-error-container"
         >
-          <span className="material-symbols-outlined" aria-hidden>
-            error
-          </span>
+          <Icon name="error" />
           {state.error}
         </div>
       )}
@@ -60,12 +55,10 @@ export function LoginForm({ from }: { from: string }) {
           Inlogcode
         </label>
         <div className="group relative w-full min-w-0">
-          <span
-            className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline transition-colors group-focus-within:text-primary"
-            aria-hidden
-          >
-            lock
-          </span>
+          <Icon
+            name="lock"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-outline transition-colors group-focus-within:text-primary"
+          />
           <input
             id="password"
             name="password"
@@ -82,9 +75,7 @@ export function LoginForm({ from }: { from: string }) {
             title={show ? 'Verberg code' : 'Toon code'}
             className="absolute right-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-outline transition-colors hover:text-on-surface-variant"
           >
-            <span className="material-symbols-outlined" aria-hidden>
-              {show ? 'visibility_off' : 'visibility'}
-            </span>
+            <Icon name={show ? 'visibility_off' : 'visibility'} />
           </button>
         </div>
       </div>

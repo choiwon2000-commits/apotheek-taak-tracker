@@ -26,8 +26,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Draai overal behalve op de inlogpagina zelf, statische bestanden en
-  // metadata. Server Functions posten naar hun eigen route en vallen dus
-  // ook onder deze bescherming.
-  matcher: ['/((?!login|_next/static|_next/image|favicon.ico).*)'],
+  // Draai overal behalve op de inlogpagina zelf, statische bestanden,
+  // metadata en publieke afbeeldingen (logo e.d. — niet gevoelig, moeten
+  // ook zonder login laden). Server Functions posten naar hun eigen route
+  // en vallen dus wél onder deze bescherming.
+  matcher: [
+    '/((?!login|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|gif|webp|ico)$).*)',
+  ],
 };

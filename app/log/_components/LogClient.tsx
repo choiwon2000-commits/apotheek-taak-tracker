@@ -5,6 +5,7 @@ import { useMemo, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { logTasks } from '../actions';
 import type { Category, Person } from '@/utils/supabase/types';
+import { Icon } from '../../_components/Icon';
 
 type Toast = { kind: 'success' | 'error'; message: string } | null;
 
@@ -12,14 +13,6 @@ function todayISO(): string {
   const d = new Date();
   const offsetMs = d.getTimezoneOffset() * 60_000;
   return new Date(d.getTime() - offsetMs).toISOString().slice(0, 10);
-}
-
-function Icon({ name, filled }: { name: string; filled?: boolean }) {
-  return (
-    <span className={`material-symbols-outlined${filled ? ' filled' : ''}`} aria-hidden>
-      {name}
-    </span>
-  );
 }
 
 export function LogClient({

@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { TaskWithCategory } from '@/utils/supabase/types';
+import { Icon } from './Icon';
 
 // Nederlandse labels; week begint op maandag.
 const MONTHS_NL = [
@@ -46,14 +47,6 @@ function timeLabel(createdAt: string): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(
     d.getMinutes(),
   ).padStart(2, '0')}`;
-}
-
-function Icon({ name, className }: { name: string; className?: string }) {
-  return (
-    <span className={`material-symbols-outlined${className ? ` ${className}` : ''}`} aria-hidden>
-      {name}
-    </span>
-  );
 }
 
 function StatCard({
