@@ -11,29 +11,24 @@ export default async function AdminPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('categories')
-    .select('id, name, created_at')
+    .select('id, name, description, icon, created_at')
     .order('name', { ascending: true });
 
   const categories: Category[] = data ?? [];
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:py-12">
-      <header className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-wider text-teal-700">
-          Admin
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold text-slate-900 sm:text-3xl">
-          Manage categories
-        </h1>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          Add or remove the task types staff can log each day. Deleting a
-          category also removes every logged task that used it.
+    <main className="mx-auto max-w-5xl px-margin-mobile pb-28 pt-24 md:px-margin-desktop md:pb-12">
+      <header className="mb-xl">
+        <h1 className="text-display-lg text-on-surface">Beheer</h1>
+        <p className="mt-base text-body-md text-secondary">
+          Beheer de taakcategorieën die het personeel dagelijks kan loggen. Een
+          categorie verwijderen wist ook alle gelogde taken die deze gebruikten.
         </p>
       </header>
 
       {error && (
-        <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          Could not load categories: {error.message}
+        <div className="mb-lg rounded-lg border border-error/30 bg-error-container px-md py-3 text-label-md text-on-error-container">
+          Categorieën konden niet worden geladen: {error.message}
         </div>
       )}
 

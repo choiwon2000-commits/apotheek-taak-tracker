@@ -35,7 +35,9 @@ export default async function CalendarPage({
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('tasks')
-    .select('id, date, category_id, details, created_at, category:categories(id, name)')
+    .select(
+      'id, date, category_id, details, logged_by, created_at, category:categories(id, name, icon)',
+    )
     .gte('date', start)
     .lte('date', end)
     .order('date', { ascending: true })
@@ -45,22 +47,17 @@ export default async function CalendarPage({
   const tasks = (data ?? []) as unknown as TaskWithCategory[];
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8 sm:py-12">
-      <header className="mb-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-teal-700">
-          Calendar
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold text-slate-900 sm:text-3xl">
-          Task overview
-        </h1>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          A month-by-month view of logged tasks. Select a day to see its details.
+    <main className="mx-auto max-w-5xl px-margin-mobile pb-28 pt-24 md:px-margin-desktop md:pb-12">
+      <header className="mb-lg">
+        <h1 className="text-display-lg text-on-surface">Mijn kalender</h1>
+        <p className="mt-base text-body-md text-secondary">
+          Overzicht van de gelogde taken. Kies een dag voor de details.
         </p>
       </header>
 
       {error && (
-        <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          Could not load tasks: {error.message}
+        <div className="mb-lg rounded-lg border border-error/30 bg-error-container px-md py-3 text-label-md text-on-error-container">
+          Taken konden niet worden geladen: {error.message}
         </div>
       )}
 

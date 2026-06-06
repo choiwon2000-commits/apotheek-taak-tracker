@@ -10,39 +10,33 @@ export default async function LogPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('categories')
-    .select('id, name, created_at')
+    .select('id, name, description, icon, created_at')
     .order('name', { ascending: true });
 
   const categories: Category[] = data ?? [];
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:py-12">
-      <header className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-wider text-teal-700">
-          Werk loggen
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold text-slate-900 sm:text-3xl">
-          Dagelijkse taken loggen
-        </h1>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+    <main className="mx-auto max-w-2xl px-margin-mobile pb-28 pt-24 md:px-margin-desktop md:pb-12">
+      <header className="mb-xl">
+        <h1 className="text-display-lg text-on-surface">Werk loggen</h1>
+        <p className="mt-base text-body-md text-secondary">
           Kies een datum, selecteer de taken die je hebt uitgevoerd en voeg
-          eventueel details toe. Alles wordt opgeslagen in het logboek van die
-          dag.
+          eventueel details toe.
         </p>
       </header>
 
       {error && (
-        <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mb-lg rounded-lg border border-error/30 bg-error-container px-md py-3 text-label-md text-on-error-container">
           Categorieën konden niet worden geladen: {error.message}
         </div>
       )}
 
       {!error && categories.length === 0 ? (
-        <div className="rounded-lg border border-slate-200 bg-white p-6 text-center shadow-sm">
-          <p className="text-sm text-slate-600">
+        <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg text-center shadow-sm">
+          <p className="text-body-md text-secondary">
             Nog geen categorieën. Voeg ze eerst toe in{' '}
-            <a href="/admin" className="font-medium text-teal-700 underline">
-              Admin
+            <a href="/admin" className="font-medium text-primary underline">
+              Beheer
             </a>{' '}
             voordat je werk kunt loggen.
           </p>

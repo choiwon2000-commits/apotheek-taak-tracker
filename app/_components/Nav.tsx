@@ -5,35 +5,32 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logout } from '../login/actions';
 
-const links = [
-  { href: '/', label: 'Calendar' },
-  { href: '/log', label: 'Log work' },
-  { href: '/admin', label: 'Admin' },
+type NavLink = { href: string; label: string; icon: string };
+
+const links: NavLink[] = [
+  { href: '/', label: 'Kalender', icon: 'calendar_today' },
+  { href: '/log', label: 'Werk loggen', icon: 'edit_note' },
+  { href: '/admin', label: 'Beheer', icon: 'admin_panel_settings' },
 ];
 
-// Recreation of the Apotheek Marne mark: a cluster of overlapping
-// brand-coloured dots. Swap for <Image src="/logo.png" …/> if you add
-// the original asset to /public.
-function LogoMark() {
+function Icon({
+  name,
+  className,
+  filled,
+}: {
+  name: string;
+  className?: string;
+  filled?: boolean;
+}) {
   return (
-    <svg
-      width="38"
-      height="38"
-      viewBox="0 0 40 40"
-      role="img"
-      aria-label="Apotheek Marne"
-      className="shrink-0"
+    <span
+      className={`material-symbols-outlined${filled ? ' filled' : ''}${
+        className ? ` ${className}` : ''
+      }`}
+      aria-hidden
     >
-      <g stroke="#ffffff" strokeWidth="1.5">
-        <circle cx="24.5" cy="12.2" r="6" fill="#f59e0b" />
-        <circle cx="15.5" cy="12.2" r="6" fill="#fb923c" />
-        <circle cx="29" cy="20" r="6" fill="#14b8a6" />
-        <circle cx="11" cy="20" r="6" fill="#ec4899" />
-        <circle cx="24.5" cy="27.8" r="6" fill="#3b82f6" />
-        <circle cx="15.5" cy="27.8" r="6" fill="#8b5cf6" />
-        <circle cx="20" cy="20" r="6" fill="#22c55e" />
-      </g>
-    </svg>
+      {name}
+    </span>
   );
 }
 
@@ -43,47 +40,72 @@ export function Nav() {
   // Geen navigatie op de inlogpagina.
   if (pathname === '/login') return null;
 
+  const isActive = (href: string) =>
+    href === '/' ? pathname === '/' : pathname.startsWith(href);
+
   return (
-    <nav className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 shadow-sm backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2.5">
-        <Link href="/" className="flex items-center gap-2.5">
-          <LogoMark />
-          <span className="flex flex-col leading-tight">
-            <span className="text-sm font-bold tracking-tight text-blue-900">
-              Apotheek Marne
-            </span>
-            <span className="text-[11px] font-medium text-slate-500">
-              Pharmacy Task Tracker
-            </span>
+    <>
+      {/* Bovenbalk */}
+      <header className="fixed top-0 left-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface px-margin-mobile shadow-sm md:px-margin-desktop">
+        <Link href="/" className="flex items-center gap-sm">
+          <Icon name="medical_services" className="text-primary" filled />
+          <span className="text-headline-sm-mobile font-bold text-primary">
+            Apotheek Marne
           </span>
         </Link>
-        <div className="flex items-center gap-1 text-sm">
-          {links.map((link) => {
-            const active = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={
-                  active
-                    ? 'rounded-md bg-teal-50 px-3 py-1.5 font-medium text-teal-700'
-                    : 'rounded-md px-3 py-1.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900'
-                }
-              >
-                {link.label}
-              </Link>
-            );
-          })}
+
+        <div className="flex items-center gap-md">
+          <nav className="hidden h-full items-center gap-sm md:flex">
+            {links.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={
+                    active
+                      ? 'rounded-lg px-3 py-2 text-label-md font-bold text-primary border-b-2 border-primary'
+                      : 'rounded-lg px-3 py-2 text-label-md text-secondary transition-colors hover:bg-surface-container-high'
+                  }
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+
           <form action={logout}>
             <button
               type="submit"
-              className="rounded-md px-3 py-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+              title="Uitloggen"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-primary transition-colors hover:bg-surface-container-high"
             >
-              Uitloggen
+              <Icon name="logout" />
             </button>
           </form>
         </div>
-      </div>
-    </nav>
+      </header>
+
+      {/* Onderbalk (mobiel) */}
+      <nav className="fixed bottom-0 left-0 z-50 flex h-20 w-full items-center justify-around border-t border-outline-variant bg-surface px-sm shadow-sm md:hidden">
+        {links.map((link) => {
+          const active = isActive(link.href);
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={
+                active
+                  ? 'flex flex-col items-center gap-1 rounded-xl bg-primary-container px-4 py-1.5 text-on-primary-container transition-transform active:scale-95'
+                  : 'flex flex-col items-center gap-1 px-4 py-1.5 text-secondary transition-colors active:scale-95'
+              }
+            >
+              <Icon name={link.icon} filled={active} />
+              <span className="text-label-sm">{link.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </>
   );
 }

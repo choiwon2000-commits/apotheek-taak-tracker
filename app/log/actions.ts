@@ -18,6 +18,7 @@ const MAX_DETAILS = 300;
 export async function logTasks(
   date: string,
   entries: LogEntry[],
+  loggedBy?: string,
 ): Promise<ActionResult> {
   if (!DATE_RE.test(date)) {
     return { ok: false, error: 'Kies een geldige datum.' };
@@ -25,6 +26,11 @@ export async function logTasks(
   if (!Array.isArray(entries) || entries.length === 0) {
     return { ok: false, error: 'Selecteer minstens één taak.' };
   }
+
+  const by =
+    typeof loggedBy === 'string' && loggedBy.trim()
+      ? loggedBy.trim().slice(0, 60)
+      : null;
 
   const rows = [];
   for (const entry of entries) {
@@ -43,6 +49,7 @@ export async function logTasks(
       date,
       category_id: entry.categoryId,
       details: details || null,
+      logged_by: by,
     });
   }
 

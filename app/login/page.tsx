@@ -15,21 +15,52 @@ export default async function LoginPage({
   const from = raw && raw.startsWith('/') && !raw.startsWith('//') ? raw : '/';
 
   return (
-    <main className="mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-md items-center px-4">
-      <div className="w-full rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <header className="mb-6">
-          <p className="text-xs font-semibold uppercase tracking-wider text-teal-700">
-            Apotheek Marne
-          </p>
-          <h1 className="mt-1 text-2xl font-semibold text-slate-900">
-            Inloggen
-          </h1>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            Voer de inlogcode in om de takenlijst te bekijken en bij te werken.
-          </p>
-        </header>
+    <main className="flex min-h-screen items-center justify-center bg-background p-gutter">
+      <div className="w-full max-w-md">
+        <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg shadow-sm md:p-xl">
+          {/* Logo & titel */}
+          <div className="mb-xl flex flex-col items-center">
+            <div className="mb-md flex h-20 w-20 items-center justify-center rounded-lg bg-primary-container text-on-primary-container">
+              <span
+                className="material-symbols-outlined filled"
+                style={{ fontSize: 40 }}
+                aria-hidden
+              >
+                medical_services
+              </span>
+            </div>
+            <h1 className="text-center text-headline-md text-on-surface">
+              Apotheek Marne
+            </h1>
+            <p className="mt-xs text-label-md text-secondary">
+              Personeelsportaal
+            </p>
+          </div>
 
-        <LoginForm from={from} />
+          <LoginForm from={from} />
+
+          <div className="mt-xl border-t border-outline-variant pt-lg text-center">
+            <p className="text-label-sm text-secondary">
+              Hulp nodig bij het inloggen? Neem contact op met de beheerder.
+            </p>
+          </div>
+        </div>
+
+        {/* Vertrouwens-elementen */}
+        <div className="mt-lg flex justify-center gap-xl opacity-40">
+          <div className="flex items-center gap-xs">
+            <span
+              className="material-symbols-outlined text-secondary"
+              style={{ fontSize: 16 }}
+              aria-hidden
+            >
+              verified_user
+            </span>
+            <span className="text-label-sm text-secondary">
+              Beveiligde verbinding
+            </span>
+          </div>
+        </div>
       </div>
     </main>
   );
